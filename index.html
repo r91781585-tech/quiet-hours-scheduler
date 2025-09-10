@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiet Hours Scheduler</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/components.css">
+    <link rel="stylesheet" href="styles/animations.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="app">
+        <!-- Navigation -->
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="nav-brand">
+                    <i class="fas fa-moon"></i>
+                    <span>Quiet Hours</span>
+                </div>
+                <div class="nav-menu">
+                    <button class="nav-item active" data-tab="dashboard">
+                        <i class="fas fa-home"></i>
+                        Dashboard
+                    </button>
+                    <button class="nav-item" data-tab="schedule">
+                        <i class="fas fa-calendar-plus"></i>
+                        Schedule
+                    </button>
+                    <button class="nav-item" data-tab="sessions">
+                        <i class="fas fa-clock"></i>
+                        Sessions
+                    </button>
+                    <button class="nav-item" data-tab="analytics">
+                        <i class="fas fa-chart-bar"></i>
+                        Analytics
+                    </button>
+                </div>
+                <div class="nav-actions">
+                    <button class="theme-toggle" id="themeToggle">
+                        <i class="fas fa-sun"></i>
+                    </button>
+                    <div class="user-menu">
+                        <button class="user-avatar" id="userAvatar">
+                            <i class="fas fa-user"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Dashboard Tab -->
+            <div class="tab-content active" id="dashboard">
+                <div class="dashboard-header">
+                    <h1>Welcome back!</h1>
+                    <p>Manage your quiet study sessions effectively</p>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="totalHours">0</h3>
+                            <p>Total Study Hours</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-calendar-check"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="completedSessions">0</h3>
+                            <p>Completed Sessions</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-fire"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="currentStreak">0</h3>
+                            <p>Day Streak</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-calendar-day"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="todaySessions">0</h3>
+                            <p>Today's Sessions</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dashboard-grid">
+                    <div class="dashboard-card">
+                        <h2>Current Session</h2>
+                        <div id="currentSession" class="current-session">
+                            <div class="no-session">
+                                <i class="fas fa-moon"></i>
+                                <p>No active session</p>
+                                <button class="btn btn-primary" onclick="showTab('schedule')">
+                                    Schedule a Session
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-card">
+                        <h2>Upcoming Sessions</h2>
+                        <div id="upcomingSessions" class="upcoming-sessions">
+                            <!-- Dynamic content -->
+                        </div>
+                    </div>
+
+                    <div class="dashboard-card">
+                        <h2>Quick Actions</h2>
+                        <div class="quick-actions">
+                            <button class="quick-action-btn" onclick="quickSchedule(30)">
+                                <i class="fas fa-play"></i>
+                                30 min session
+                            </button>
+                            <button class="quick-action-btn" onclick="quickSchedule(60)">
+                                <i class="fas fa-play"></i>
+                                1 hour session
+                            </button>
+                            <button class="quick-action-btn" onclick="quickSchedule(120)">
+                                <i class="fas fa-play"></i>
+                                2 hour session
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Schedule Tab -->
+            <div class="tab-content" id="schedule">
+                <div class="schedule-header">
+                    <h1>Schedule Quiet Hours</h1>
+                    <p>Create focused study time blocks</p>
+                </div>
+
+                <div class="schedule-form-container">
+                    <form class="schedule-form" id="scheduleForm">
+                        <div class="form-group">
+                            <label for="sessionTitle">Session Title</label>
+                            <input type="text" id="sessionTitle" placeholder="e.g., Math Study Session" required>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="sessionDate">Date</label>
+                                <input type="date" id="sessionDate" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="sessionTime">Start Time</label>
+                                <input type="time" id="sessionTime" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="sessionDuration">Duration</label>
+                            <select id="sessionDuration" required>
+                                <option value="30">30 minutes</option>
+                                <option value="45">45 minutes</option>
+                                <option value="60" selected>1 hour</option>
+                                <option value="90">1.5 hours</option>
+                                <option value="120">2 hours</option>
+                                <option value="180">3 hours</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="sessionCategory">Category</label>
+                            <select id="sessionCategory">
+                                <option value="study">Study</option>
+                                <option value="work">Work</option>
+                                <option value="reading">Reading</option>
+                                <option value="research">Research</option>
+                                <option value="writing">Writing</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="sessionNotes">Notes (Optional)</label>
+                            <textarea id="sessionNotes" placeholder="Add any notes about this session..."></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="enableNotifications" checked>
+                                <span class="checkmark"></span>
+                                Enable notifications (10 minutes before)
+                            </label>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="enableRecurring">
+                                <span class="checkmark"></span>
+                                Recurring session
+                            </label>
+                        </div>
+
+                        <div class="recurring-options" id="recurringOptions" style="display: none;">
+                            <div class="form-group">
+                                <label for="recurringType">Repeat</label>
+                                <select id="recurringType">
+                                    <option value="daily">Daily</option>
+                                    <option value="weekly">Weekly</option>
+                                    <option value="monthly">Monthly</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="recurringEnd">End Date</label>
+                                <input type="date" id="recurringEnd">
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-secondary" onclick="resetForm()">
+                                Reset
+                            </button>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-plus"></i>
+                                Schedule Session
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Sessions Tab -->
+            <div class="tab-content" id="sessions">
+                <div class="sessions-header">
+                    <h1>Your Sessions</h1>
+                    <div class="sessions-filters">
+                        <button class="filter-btn active" data-filter="all">All</button>
+                        <button class="filter-btn" data-filter="upcoming">Upcoming</button>
+                        <button class="filter-btn" data-filter="completed">Completed</button>
+                        <button class="filter-btn" data-filter="missed">Missed</button>
+                    </div>
+                </div>
+
+                <div class="sessions-list" id="sessionsList">
+                    <!-- Dynamic content -->
+                </div>
+            </div>
+
+            <!-- Analytics Tab -->
+            <div class="tab-content" id="analytics">
+                <div class="analytics-header">
+                    <h1>Analytics</h1>
+                    <p>Track your study progress and patterns</p>
+                </div>
+
+                <div class="analytics-grid">
+                    <div class="analytics-card">
+                        <h3>Weekly Progress</h3>
+                        <canvas id="weeklyChart" width="400" height="200"></canvas>
+                    </div>
+
+                    <div class="analytics-card">
+                        <h3>Category Distribution</h3>
+                        <canvas id="categoryChart" width="400" height="200"></canvas>
+                    </div>
+
+                    <div class="analytics-card">
+                        <h3>Study Patterns</h3>
+                        <div class="pattern-stats">
+                            <div class="pattern-item">
+                                <span class="pattern-label">Most Productive Hour:</span>
+                                <span class="pattern-value" id="mostProductiveHour">--</span>
+                            </div>
+                            <div class="pattern-item">
+                                <span class="pattern-label">Average Session Length:</span>
+                                <span class="pattern-value" id="avgSessionLength">--</span>
+                            </div>
+                            <div class="pattern-item">
+                                <span class="pattern-label">Completion Rate:</span>
+                                <span class="pattern-value" id="completionRate">--</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="analytics-card">
+                        <h3>Monthly Overview</h3>
+                        <div class="monthly-calendar" id="monthlyCalendar">
+                            <!-- Dynamic calendar -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Session Timer Modal -->
+        <div class="modal" id="timerModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Study Session Active</h2>
+                    <button class="modal-close" onclick="closeTimer()">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="timer-display">
+                        <div class="timer-circle">
+                            <svg class="timer-svg" viewBox="0 0 100 100">
+                                <circle class="timer-bg" cx="50" cy="50" r="45"></circle>
+                                <circle class="timer-progress" cx="50" cy="50" r="45" id="timerProgress"></circle>
+                            </svg>
+                            <div class="timer-text">
+                                <span class="timer-time" id="timerTime">25:00</span>
+                                <span class="timer-label" id="timerLabel">Focus Time</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="timer-controls">
+                        <button class="timer-btn" id="pauseBtn" onclick="pauseTimer()">
+                            <i class="fas fa-pause"></i>
+                        </button>
+                        <button class="timer-btn" id="stopBtn" onclick="stopTimer()">
+                            <i class="fas fa-stop"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Notification -->
+        <div class="notification" id="notification">
+            <div class="notification-content">
+                <i class="notification-icon"></i>
+                <span class="notification-message"></span>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/app.js"></script>
+    <script src="js/scheduler.js"></script>
+    <script src="js/timer.js"></script>
+    <script src="js/analytics.js"></script>
+    <script src="js/notifications.js"></script>
+</body>
+</html>
